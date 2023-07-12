@@ -25,14 +25,17 @@ def get_filtered_operations(data):
             operations_filtr.append(operation)
     return operations_filtr
 
+
 def get_sorted_operations(data):
     """
     получает отсортированный по дате по убыванию список словарей
     :param data: список словарей с операциями, полученный с помощью функции get_filtered_operations
     :return: отсортированный список словарей
     """
+
     def key_sorted(x):
         return x['date']
+
     operations_sort = sorted(data, key=key_sorted, reverse=True)
     return operations_sort[:5]
 
@@ -43,6 +46,7 @@ def get_formatted_operations(data):
     :param data: отсортированный при помощи функции get_sorted_operations список словарей
     :return: список словарей, готовый к выводу
     """
+    operations_format = []
     for operation in data:
         date_old = operation['date']
         date_formatted = datetime.strptime(date_old, "%Y-%m-%dT%H:%M:%S.%f").strftime("%d.%m.%Y")
@@ -59,6 +63,11 @@ def get_formatted_operations(data):
             else:
                 number_from = f'{number_from_before[:4]} {number_from_before[4:6]}** **** {number_from_before[-4:]}'
                 card_or_check = ' '.join(from_list[:2]) if len(from_list) == 3 else from_list[0]
-            print(f'{date_formatted} {operation["description"]}\n{card_or_check} {number_from}-> {check_to} {number_to}\n{operation["operationAmount"]["amount"]} {operation["operationAmount"]["currency"]["name"]}\n')
+            operations_format.append(f'{date_formatted} {operation["description"]}\n'
+                  f'{card_or_check} {number_from} -> {check_to} {number_to}\n'
+                  f'{operation["operationAmount"]["amount"]} {operation["operationAmount"]["currency"]["name"]}\n')
         else:
-            print(f'{date_formatted} {operation["description"]}\n{check_to} {number_to}\n{operation["operationAmount"]["amount"]} {operation["operationAmount"]["currency"]["name"]}\n')
+            operations_format.append(f'{date_formatted} {operation["description"]}\n'
+                  f'{check_to} {number_to}\n'
+                  f'{operation["operationAmount"]["amount"]} {operation["operationAmount"]["currency"]["name"]}\n')
+    return operations_format
